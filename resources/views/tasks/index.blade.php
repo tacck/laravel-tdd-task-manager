@@ -19,7 +19,7 @@
     <h2>Tasks List</h2>
     <ul>
         @foreach ($tasks as $task)
-            <li>{{ $task->title }} <input type="checkbox"
+            <li><a href="/tasks/{{ $task->id }}">{{ $task->title }}</a> <input type="checkbox"
                                           name="checkbox_{{ $task->id }}" {!! $task->executed ? 'checked="checked"' : '' !!}>
             </li>
         @endforeach
