@@ -43,4 +43,18 @@ class TaskControllerTest extends TestCase
 
         $response->assertStatus(404);
     }
+
+    /**
+     * Put Task Detail Path Test
+     *
+     * @return void
+     */
+    public function testPutTaskPath()
+    {
+        $data = [];
+
+        $response = $this->put('/tasks/1', $data);
+
+        $response->assertStatus(302);
+    }
 }
