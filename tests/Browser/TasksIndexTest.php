@@ -52,4 +52,19 @@ class TasksIndexTest extends DuskTestCase
                 ->assertInputValue('#title', 'テストタスク');
         });
     }
+
+    /**
+     * Index To New Test.
+     *
+     * @throws \Throwable
+     */
+    public function testIndexToNew() {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/tasks')
+                ->assertSeeLink('新規追加')
+                ->clickLink('新規追加')
+                ->waitForLocation('/tasks/new')
+                ->assertPathIs('/tasks/new');
+        });
+    }
 }

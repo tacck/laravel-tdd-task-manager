@@ -17,6 +17,12 @@
 <body>
 <div class="container">
     <h2>Tasks List</h2>
+    <div class="col-md-2">
+        {{ link_to_action('TaskController@new',
+            '新規追加',
+            [],
+            ['class' => 'btn btn-primary btn-block']) }}
+    </div>
     <ul>
         @foreach ($tasks as $task)
             <li><a href="/tasks/{{ $task->id }}">{{ $task->title }}</a> <input type="checkbox"

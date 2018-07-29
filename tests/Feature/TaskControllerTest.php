@@ -98,4 +98,113 @@ class TaskControllerTest extends TestCase
 
         $this->assertDatabaseHas('tasks', $data);
     }
+
+    /**
+     * Get New Task Path Test
+     *
+     * @return void
+     */
+    public function testGetNewTaskPath()
+    {
+        $response = $this->get('/tasks/new');
+
+        $response->assertStatus(200);
+    }
+
+    /**
+     * Post Task Path Test
+     *
+     * @return void
+     */
+    public function testPostTaskPath()
+    {
+        $data = [
+            'title' => 'test title',
+        ];
+        $this->assertDatabaseMissing('tasks', $data);
+
+        $response = $this->post('/tasks/', $data);
+
+        $response->assertStatus(302)
+            ->assertRedirect('/tasks/');
+
+        $this->assertDatabaseHas('tasks', $data);
+    }
+
+    /**
+     * Post Task Path Test (Without Title)
+     *
+     * @return void
+     */
+    public function testPostTaskPathWithoutTitle_failed()
+    {
+        $data = [];
+        $response = $this->from('/tasks/new')
+            ->post('/tasks/', $data);
+
+        $response->assertSessionHasErrors(['title' => 'The title field is required.']);
+
+        $response->assertStatus(302)
+            ->assertRedirect('/tasks/new');
+    }
+
+    /**
+     * Post Task Path Test (Empty Title)
+     *
+     * @return void
+     */
+    public function testPostTaskPathEmptyTitle_failed()
+    {
+        $data = [
+            'title' => ''
+        ];
+        $response = $this->from('/tasks/new')
+            ->post('/tasks/', $data);
+
+        $response->assertSessionHasErrors(['title' => 'The title field is required.']);
+
+        $response->assertStatus(302)
+            ->assertRedirect('/tasks/new');
+    }
+
+    /**
+     * Post Task Path Test (Max Length)
+     *
+     * @return void
+     */
+    public function testPostTaskPathTitleMaxLength()
+    {
+        $data = [
+            'title' => str_random(512)
+        ];
+
+        $this->assertDatabaseMissing('tasks', $data);
+
+        $response = $this->post('/tasks/', $data);
+
+        $response->assertStatus(302)
+            ->assertRedirect('/tasks/');
+
+        $this->assertDatabaseHas('tasks', $data);
+    }
+
+    /**
+     * Post Task Path Test (Max Length + 1)
+     *
+     * @return void
+     */
+    public function testPostTaskPathTitleMaxLengthPlus1_failed()
+    {
+        $data = [
+            'title' => str_random(513)
+        ];
+
+        $response = $this->from('/tasks/new')
+            ->post('/tasks/', $data);
+
+        $response->assertSessionHasErrors(['title' => 'The title may not be greater than 512 characters.']);
+
+        $response->assertStatus(302)
+            ->assertRedirect('/tasks/new');
+    }
 }
