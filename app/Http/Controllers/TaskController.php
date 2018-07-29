@@ -46,4 +46,20 @@ class TaskController extends Controller
 
         return redirect('/tasks/' . $id);
     }
+
+    public function new()
+    {
+        return view('tasks.new');
+    }
+
+    public function create(Request $request)
+    {
+        $validatedData = $request->validate([
+            'title' => 'required|max:512',
+        ]);
+
+        Task::create(['title' => $request->title, 'executed' => false]);
+
+        return redirect('/tasks');
+    }
 }
